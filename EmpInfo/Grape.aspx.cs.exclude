@@ -1,0 +1,121 @@
+﻿using Oracle.ManagedDataAccess.Client;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+public partial class PublicPage_Grape : System.Web.UI.Page
+{
+    string cs = "";
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!this.IsPostBack)
+        {
+            refreshData();
+            refreshData1();
+        }
+    }
+
+    private void refreshData()
+    {
+        new dbRead(ConString.csHoney).fillListbox(ListBox1, "select defect_code||' : '||description from defect_code order by defect_code asc");
+    }
+
+    private void refreshData1()
+    {
+        new dbRead(ConString.csHoney).fillListbox(ListBox2, "select station||' : '||station_name from station_master order by station asc");
+
+    }
+
+    protected void Remove_Click(object sender, EventArgs e)
+    {
+        var desc = ListBox1.SelectedItem.Text.Split(':')[0].Trim();
+        var sta = ListBox3.SelectedItem.Text.Split(':')[0].Trim();
+
+        new dbWrite(ConString.csHoney).dbNonQuery(string.Format(@"delete from CUST_TB_GRAPE_DEFECT_STATION where DEFECT_CODE = '{0}' and STATION = '{1}'", desc, sta));
+        ListBox3.Items.Clear();
+        new dbRead(ConString.csHoney).fillListbox(ListBox3, "SELECT DS.STATION||' : '||SM.DESCRIPTION FROM CUST_TB_GRAPE_DEFECT_STATION DS, STATION_MASTER SM where DS.STATION=SM.STATION AND DEFECT_CODE = '" + desc + "'");
+    }
+
+    protected void Search_Click(object sender, EventArgs e)
+    {
+        ListBox1.Items.Clear();
+        var t1 = TextBox1.Text;
+
+        new dbRead(ConString.csHoney).fillListbox(ListBox1, (string.Format(@"select defect_code||' : '||description from defect_code where upper(defect_code) like '%{0}%' or upper(description) like '%{0}%' order by defect_code asc", t1.ToUpper())));
+    }
+    protected void Search1_Click(object sender, EventArgs e)
+    {
+        ListBox2.Items.Clear();
+        var t2 = TextBox2.Text;
+        new dbRead(ConString.csHoney).fillListbox(ListBox2, (string.Format(@"select station||' : '||station_name from station_master where upper(station) like '%{0}%' or upper(station_name) like '%{0}%' order by station asc", t2.ToUpper())));
+    }
+
+    protected void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        var def = ListBox1.SelectedItem.Text;
+        var df = def.Split(':')[0].Trim();
+        ListBox3.Items.Clear();
+        new dbRead(ConString.csHoney).fillListbox(ListBox3, (string.Format(@"select DS.STATION || ' : ' || DESCRIPTION from CUST_TB_GRAPE_DEFECT_STATION DS, STATION_MASTER SM where DS.STATION = SM.STATION and DEFECT_CODE = '" + df + "'")));
+    }
+
+    protected void Bind_Click(object sender, EventArgs e)
+    {
+        var defect = ListBox1.SelectedIndex;
+        var def = ListBox1.SelectedItem.Text;
+        var df = def.Split(':')[0].Trim();
+
+        var station = ListBox2.SelectedIndex;
+        var sta = ListBox2.SelectedItem.Text;
+        var st = sta.Split(':')[0].Trim();
+
+        if (!(new dbRead(ConString.csHoney).hasRowChecker(string.Format(@"select STATION from CUST_TB_GRAPE_DEFECT_STATION where DEFECT_CODE = '{0}' and STATION = '{1}'", df, st))))
+        {
+            new dbWrite(ConString.csHoney).dbNonQuery(string.Format(@"insert into CUST_TB_GRAPE_DEFECT_STATION (DEFECT_CODE, STATION, DATETIME) values ('" + df + "', '" + st + "', sysdate )"));
+            ListBox3.Items.Clear();
+            new dbRead(ConString.csHoney).fillListbox(ListBox3, "SELECT DS.STATION||' : '||SM.DESCRIPTION FROM CUST_TB_GRAPE_DEFECT_STATION DS, STATION_MASTER SM where DS.STATION=SM.STATION AND DEFECT_CODE = '" + df + "'");
+            ListBox2.BorderColor = Color.LightGray;
+            error.Visible = false;
+        }
+        else
+        {
+            ListBox2.BorderColor = Color.Red;
+            //ListBox2.Focus();
+            error.Visible = true;
+        }
+    }
+
+    protected void Reset_Click(object sender, EventArgs e)
+    {
+        TextBox1.Text = "";
+        ListBox1.ClearSelection();
+        refreshData();
+    }
+
+    protected void Reset1_Click(object sender, EventArgs e)
+    {
+        TextBox2.Text = "";
+        ListBox2.ClearSelection();
+        refreshData1();
+    }
+
+    protected void Reset2_Click(object sender, EventArgs e)
+    {
+        TextBox1.Text = "";
+        TextBox2.Text = "";
+        ListBox1.ClearSelection();
+        ListBox2.ClearSelection();
+        ListBox2.BorderColor = Color.LightGray;
+        ListBox3.Items.Clear();
+        error.Visible = false;
+        refreshData();
+        refreshData1();
+    }
+
+}
+
