@@ -1,0 +1,173 @@
+﻿@model IEnumerable<AutoRSN.Models.Reason>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- -------------- Topbar -------------- -->
+<header id="topbar" class="alt">
+    <div class="topbar-left">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-icon">
+                <a href="#">
+                    <span class="fa fa-home"></span>
+                </a>
+            </li>
+            <li class="breadcrumb-active">
+                <a href="#">Master Setup</a>
+            </li>
+            <li class="breadcrumb-link">
+                <a href="#">HOME</a>
+            </li>
+            <li class="breadcrumb-current-item">REASON</li>
+        </ol>
+    </div>
+    <div class="topbar-right">
+        <div class="ml15 ib va-m" id="sidebar_right_toggle">
+            <div class="navbar-btn btn-group btn-group-number mv0">
+                <button class="btn btn-sm btn-default btn-bordered prn pln">
+                    <i class="fa fa-search fs22 text-default"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- -------------- Content -------------- -->
+<section id="content" class="table-layout animated fadeIn">
+
+    <script>
+
+        function confirmask(reasonID)
+        {
+           // alert(so + "/" + soline);
+
+          //  var url = '/ItemNotes/Delete?so=' + so + '&soline=' + soline;
+
+            if (confirm("Are you sure you want to delete this Reason")) {
+                location.href = '/AutoRSN/Reason/Delete?reasonID=' + reasonID;
+                } else {
+               // txt = "You pressed Cancel!";
+            }
+        }
+
+
+    </script>
+
+@try
+{
+    if (Session["Level"].ToString().Equals("1"))
+    {
+
+    }
+    <!-- -------------- Column Center -------------- -->
+    <div class="chute chute-center">
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-success" style="float: none;" role="alert">
+                <b>@TempData["Message"]</b>
+            </div>
+        }
+
+
+        @{
+            if (Session["Level"].ToString().Equals("1"))
+            {
+                <div class="alert alert-danger" style="float: none;" role="alert">
+                    <b>Your Account doesn't have this priviledge..</b>
+                </div>
+            }
+            else
+            {
+
+        <div class="col-md-push-12">
+            <div class="panel panel-visible" id="PanelGridItemNotes">
+                <div class="panel-heading">
+                    <div class="panel-title hidden-xs">
+                        REASON MASTER LIST
+                    </div>
+                </div>
+                <div class="panel-body pn">
+                    <div class="panel-title">
+                        @Html.ActionLink("Create", "Create", new { }, new { @class = "btn btn-bordered btn-dark w150" })
+                    </div>
+                </div>
+                    <div class="panel-body pn">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered" id="datatable2" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th class="va-m">Reason</th>
+                                        <th class="va-m">Description</th>
+                                        <th class="va-m">Status</th>
+                                        <th class="va-m">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td> @Html.DisplayFor(modelItem => item.REASON) </td>
+                                            <td> @Html.DisplayFor(modelItem => item.DESCRIPTION) </td>
+                                            @if (item.STATUS == "Y")
+                                            {<td class="bg-light"> ACTIVE </td>}
+                                            else
+                                            {<td class="bg-danger"> INACTIVE </td> }
+                                            <td>
+                                                @Html.ActionLink(" ", "EDIT", new { ReasonId = item.REASONID }, new { @class = "btn btn-sm btn-default btn-bordered prn pln fa fa-edit fs22 text-default w50" }) |
+                                                @Html.ActionLink(" ", "DETAILS", new { ReasonId = item.REASONID }, new { @class = "btn btn-sm btn-default btn-bordered prn pln fa fa-search fs22 text-default w50" }) |
+                                                <input type="button" value="Remove" onclick="confirmask('@item.REASONID')" class="btn btn-sm btn-default btn-bordered prn pln fa fa-eraser fs18 text-default " />
+                                            
+                                             </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+                }
+            }
+    </div>
+
+            }
+            catch (Exception ex)
+            {
+                <script type="text/javascript">
+                                alert('@ex.Message.Replace("'","\\'").Replace("\r\n","<br/>")' + '\n' + 'Session Timeout');
+                                location.href = '/AutoRSN';
+                                //alert('Session Timeout');
+                </script>
+            }
+
+</section>
+
+<!-- -------------- Sidebar Right -------------- -->
+<aside id="sidebar_right" class="nano affix">
+    <!-- -------------- Sidebar Right Content -------------- -->
+    <div class="sidebar-right-wrapper nano-content">
+        <div class="sidebar-block br-n p15">
+            <form role="form" action="" method="post">
+                <!-- -------------- Menu Block -------------- -->
+                <div class="allcp-form theme-primary">
+
+                    <h5 class="pln"> Filter Reasons</h5>
+
+                    <h6 class="mb15"> By Reason :</h6>
+
+                    <div class="section mb20">
+                        <input type="text" name="FilterByReason" id="FilterByReason" class="gui-input" placeholder="Enter filter reason here...">
+                    </div>
+
+                    <hr class="short">
+
+                    <div class="section">
+                        <button type="submit" class="btn btn-dark pull-right ph30">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</aside>
+<!-- -------------- /Sidebar Right -------------- -->

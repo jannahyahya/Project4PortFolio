@@ -1,0 +1,408 @@
+﻿@model AutoRSN.Models.User
+
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- -------------- Topbar -------------- -->
+<header id="topbar" class="alt">
+    <div class="topbar-left">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-icon">
+                <a href="#">
+                    <span class="fa fa-home"></span>
+                </a>
+            </li>
+            <li class="breadcrumb-active">
+                <a href="#">Master Setup</a>
+            </li>
+            <li class="breadcrumb-link">
+                <a href="#">HOME</a>
+            </li>
+            <li class="breadcrumb-current-item">User EDIT</li>
+        </ol>
+    </div>
+    <div class="topbar-right">
+        <div class="ib topbar-dropdown">
+
+        </div>
+    </div>
+</header>
+
+<!-- -------------- Content -------------- -->
+<section id="content" class="table-layout animated fadeIn">
+    <div class="pl15 pr50">
+        @if (TempData["Message"] != null)
+            {
+            <div class="alert alert-danger" style="float: none;" role="alert">
+                <b>@TempData["Message"]</b>
+            </div>
+        }
+        @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { @class = "form-horizontal", @enctype = "multipart/form-data" }))
+        {
+            @Html.ValidationSummary(true)
+            @Html.AntiForgeryToken()
+            // @Html.HiddenFor(model => model.FULLNAME)
+            @Html.HiddenFor(model => model.USERNAME)
+            @Html.HiddenFor(model => model.SERVERID)
+
+            <div class="alert alert-danger dark alert-dismissable" style="display:@(this.ViewData.ModelState.IsValid ? "none" : "")">
+                @Html.ValidationSummary()
+            </div>
+
+            <div class="form-group">
+                <label class="col-lg-3 control-label">FULL NAME:</label>
+                <div class="col-lg-8">
+                    <p class="form-control-static"> @Html.TextBoxFor(model => model.FULLNAME, new { @class = "form-control" })</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-lg-3 control-label">WINDOWS ID :</label>
+                <div class="col-lg-8">
+                    <p class="form-control-static"> @Html.TextBoxFor(model => model.USERNAME, new { @class = "form-control", @readonly = "readonly" })</p>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-lg-3 control-label">EMAIL :</label>
+                <div class="col-lg-8">
+                    <p class="form-control-static"> @Html.TextBoxFor(model => model.EMAIL, new { @class = "form-control" })</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-lg-3 control-label">LEVEL :</label>
+                <div class="col-lg-8">
+                    @{
+
+                        List<SelectListItem> listItems = new List<SelectListItem>();
+                        SelectListItem adminSelect = new SelectListItem
+                        {
+                            Text = "0-ADMIN",
+                            Value = "0"
+
+                        };
+
+                        SelectListItem userSelect = new SelectListItem
+                        {
+                            Text = "1-DISPLAY ONLY",
+                            Value = "1",
+
+                        };
+
+
+                        if (Model.LVL.Equals("0"))
+                        {
+                            adminSelect.Selected = true;
+                            userSelect.Selected = false;
+
+                        }
+                        else if(Model.LVL.Equals("1"))
+                        {
+                            adminSelect.Selected = false;
+                            userSelect.Selected = true;
+                        }
+                        listItems.Add(adminSelect);
+                        listItems.Add(userSelect);
+
+                        //listItems.Add(new SelectListItem
+                        //{
+                        //    Text = "2-EDIT & DISPLAY",
+                        //    Value = "2"
+
+                        //});
+                    }
+                    <p class="form-control-static"> @Html.DropDownListFor(model => model.LVL, listItems, "-- Select User Level --")</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-lg-3 control-label">CUSTOMER GROUP:</label>
+                <div class="col-lg-8">
+
+                    <table border="1">
+                        @{
+                            AutoRSN.Repositories.UserRepository cr = new AutoRSN.Repositories.UserRepository();
+                            AutoRSN.Models.User ObjUser = cr.getUserData(Model.USERNAME);
+
+                            ObjUser.CUSTOMERGROUP = new string[ObjUser.PermissionHolderList.Count];
+                            ObjUser.PERMISSION = new string[ObjUser.PermissionHolderList.Count];
+
+                            for(int i = 0; i < ObjUser.PermissionHolderList.Count ; i++)
+                            {
+                                ObjUser.CUSTOMERGROUP[i] = ObjUser.PermissionHolderList.ElementAt(i).Customer;
+                                ObjUser.PERMISSION[i] = ObjUser.PermissionHolderList.ElementAt(i).Permission;
+                            }
+
+                            //List<SelectListItem> listCust = new List<SelectListItem>();
+                            List<SelectListItem> listCust = new List<SelectListItem>();
+                            for (int i = 0; i < Model.CUSTOMERGROUP.Length; i++)
+                            {
+                                //@Html.HiddenFor(model => Model.PermissionHolderList[i].Permission) //for permission value
+                                // @Html.HiddenFor(model => Model.PermissionHolderList[i].Customer) //for customergroup value
+
+                                SelectListItem custList = new SelectListItem();
+                                custList.Text = Model.CUSTOMERGROUP[i];
+                                custList.Value = Model.CUSTOMERGROUP[i];
+                                custList.Selected = false;
+                                listCust.Add(custList); // all customer list
+
+                                System.Diagnostics.Debug.WriteLine(custList.Value);
+
+
+                                //counter++;
+                            }
+                            for (int i = 0; i < listCust.Count; i++) //list for all customer
+                            {
+
+                                List<SelectListItem> listCustPermission = new List<SelectListItem>();
+                                SelectListItem display = new SelectListItem();
+                                SelectListItem edit = new SelectListItem();
+
+                                display.Selected = false;
+                                edit.Selected = false;
+
+                                display.Text = "Display";
+                                display.Value = "Display";
+
+                                edit.Text = "Edit";
+                                edit.Value = "Edit";
+
+                                listCustPermission.Add(display);
+                                listCustPermission.Add(edit);
+
+
+                                if (i< ObjUser.CUSTOMERGROUP.Length)
+                                {
+                                    //if (listCust.ElementAt(i).Text.Equals(ObjUser.CUSTOMERGROUP[i]))
+                                    //{
+                                    //    listCust.ElementAt(i).Selected = true;
+                                    //}
+                                    System.Diagnostics.Debug.WriteLine("not reach empty : " + i);
+
+                                    System.Diagnostics.Debug.WriteLine(ObjUser.CUSTOMERGROUP[i]);
+
+                                    bool found = false;
+
+                                    foreach (SelectListItem customerGroup in listCust)
+                                    {
+                                        if(customerGroup.Text.Equals(ObjUser.CUSTOMERGROUP[i]))
+                                        {
+                                            customerGroup.Selected = true;
+                                            found = true;
+                                            break;
+                                        }
+
+                                    }
+
+                                    if(!found) //clear the customer list
+                                    {
+                                        foreach (SelectListItem customerGroup in listCust)
+                                        {
+                                            customerGroup.Selected = false;
+
+                                        }
+                                    }
+
+                                    found = false;
+                                    foreach (SelectListItem permission in listCustPermission)
+                                    {
+                                        if (permission.Text.Equals(ObjUser.PERMISSION[i]))
+                                        {
+                                            permission.Selected = true;
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!found)//clear the permission list
+                                    {
+                                        foreach (SelectListItem permission in listCustPermission)
+                                        {
+
+                                            permission.Selected = false;
+
+                                        }
+                                    }
+
+
+                                }
+
+                                else
+                                {
+
+                                    System.Diagnostics.Debug.WriteLine("reach empty : " + i);
+
+                                    foreach (SelectListItem customerGroup in listCust)
+                                    {
+                                        customerGroup.Selected = false;
+
+                                    }
+
+                                    foreach (SelectListItem permission in listCustPermission)
+                                    {
+
+                                        permission.Selected = false;
+
+                                    }
+
+                                }
+
+
+                                //for (int b = 0; b < ObjUser.CUSTOMERGROUP.Length; b++)
+                                //{
+                                //    System.Diagnostics.Debug.WriteLine(i);
+                                //    System.Diagnostics.Debug.WriteLine(b);
+                                //    System.Diagnostics.Debug.WriteLine(listCust.ElementAt(i).Value);
+                                //    System.Diagnostics.Debug.WriteLine(ObjUser.CUSTOMERGROUP[b]);
+                                //    if (!ObjUser.CUSTOMERGROUP[b].Equals(""))
+                                //    {
+
+                                //        if (listCust.ElementAt(i).Value.Equals(ObjUser.CUSTOMERGROUP[b]))
+                                //        {
+                                //            listCust.ElementAt(i).Selected = true;
+                                //            if (display.Text.Equals(ObjUser.PERMISSION[b]))
+                                //            {
+                                //                display.Selected = true;
+                                //                break;
+
+                                //            }
+
+                                //            if (edit.Text.Equals(ObjUser.PERMISSION[b]))
+                                //            {
+                                //                edit.Selected = true;
+                                //                break;
+                                //            }
+
+
+
+                                //        }
+
+                                //        else
+                                //        {
+                                //            //  listCust.ElementAt(i).Selected = false;
+                                //        }
+
+                                //    }
+
+
+                                //}
+
+
+
+                                <tr style="margin:10%">
+                                    <td>
+                                        <p class="form-control-static"> @Html.DropDownListFor(model => model.CUSTOMERGROUP[i], listCust, "-- Choose Customer Group --")</p>
+
+                                    </td>
+
+                                    <td>
+                                        <p class="form-control-static"> @Html.DropDownListFor(model => model.PERMISSION[i], listCustPermission, "-- Choose permission --")</p>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+
+                        }
+
+
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-lg-3 control-label">Department :</label>
+                <div class="col-lg-8">
+                    <p class="form-control-static"> @Html.TextAreaFor(model => model.DEPT, new { @class = "form-control" })</p>
+                </div>
+            </div>
+
+            <!--
+            <div class="form-group">
+                <label class="col-lg-3 control-label"> SIGNATURE (IMAGE) : </label>
+                <div class="col-lg-8">
+                    <p class="form-control-static"> <input type="file" name="ImageData" id="ImageData" onchange="fileCheck(this);" /> </p>
+                </div>
+            </div>-->
+
+
+
+                            List<SelectListItem> listUser = new List<SelectListItem>();
+                            AutoRSN.Repositories.UserRepository usr = new AutoRSN.Repositories.UserRepository();
+                            IEnumerable<AutoRSN.Models.User> userList = usr.GetUserBySearch(Convert.ToInt32(Session["ServerId"].ToString().ToUpper()), null);
+                            List<SelectListItem> userControlLst = new List<SelectListItem>();
+                            foreach (AutoRSN.Models.User user in userList)
+                            {
+
+                                //if(!Session["UserId"].ToString().Equals(user.USERNAME.ToUpper()))
+                                //{
+                                userControlLst.Add(new SelectListItem
+                                {
+                                    Text = user.FULLNAME,
+                                    Value = user.USERNAME
+
+                                });
+
+                                // }
+
+                            }
+
+
+                            <div class="form-group">
+                                <label class="col-lg-3 control-label"> SUPERVISOR : </label>
+                                <div class="col-lg-8">
+                                    <p class="form-control-static"> @Html.DropDownListFor(model => model.SUPERVISOR, userControlLst, "-- Choose Supervisor--") </p>
+                                </div>
+                            </div>
+
+
+
+            <div class="form-group">
+                <label class="col-lg-3 control-label">STATUS :</label>
+                <div class="col-lg-8">
+
+                    @{ 
+                        List<SelectListItem> statusItem = new List<SelectListItem>();
+                        statusItem.Add(new SelectListItem()
+                        {
+                            Text = "ACTIVE",
+                            Value = "Y"
+                        });
+
+                        statusItem.Add(new SelectListItem()
+                        {
+                            Text = "INACTIVE",
+                            Value = "N"
+                        });
+
+                    }
+                    <p class="form-control-static"> @Html.DropDownListFor(model => model.STATUS, statusItem, new { @class = "form-control" })</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-lg-3 control-label"></label>
+                <div class="col-lg-8">
+                    <p class="form-control-static text-muted"></p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-lg-3 control-label"></label>
+                <div class="col-lg-8">
+                    <input type="submit" class="btn btn-bordered btn-success w150" value="Update" />
+                    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-bordered btn-dark w150" })
+                </div>
+            </div>
+
+        }
+    </div>
+    <!-- -------------- /Column Center -------------- -->
+</section>

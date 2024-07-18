@@ -1,0 +1,338 @@
+﻿
+<script src="~/assets/js/jquery/jquery-1.11.1.min.js"></script>
+<script src="~/assets/js/jquery/jquery_ui/jquery-ui.min.js"></script>   
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table1 = $('#table1').DataTable({
+            "pageLength": 100,
+            "ordering": false
+
+        });
+
+        $('#alertSuccess').hide();
+        $('#alertFailed').hide();
+    });
+
+
+    function add(LOGICAL_SYS_GROUP, CELPN, EXPORT_CONTROL, MITI_PERMIT, REMARK)
+    {
+
+
+        $.ajax({
+            url: '@Url.Action("insertGTS")',
+            type: 'POST',
+            dataType: 'json',
+            data: { "LOGICAL_SYS_GROUP": LOGICAL_SYS_GROUP , "CELPN" : CELPN , "EXPORT_CONTROL": EXPORT_CONTROL , "MITI_PERMIT": MITI_PERMIT,"REMARK": REMARK},
+            async: false, //blocks window close
+            success: function (result) {
+                // alert(result);
+
+                if (result.STATUS == "OK")
+                {
+                    //var markup = `<tr><td  style="padding:5px;">${LOGICAL_SYS_GROUP}</td>` +
+                    //    `<td style="padding:5px;">${CELPN}</td>` +
+                    //    `<td style="padding:5px;">${EXPORT_CONTROL}</td>` +
+                    //    `<td style="padding:5px;">${MITI_PERMIT}</td>` +
+                    //     `<td style="padding:5px;">${REMARK}</td>` +
+                    //      `<td style="padding:5px;">` +
+                    //        `<button type="button" class="btn btn-success">EDIT</button>` +
+                    //        `<button type="button" class="btn btn-info">DELETE</button>` +
+                    //    `</td></tr>`;
+
+                    //$("#table1 tbody").append(markup);
+
+                    $('#alertSuccess').show();
+                    $('#alertFailed').hide();
+                    $('#alertSuccess').html(result.MESSAGE);
+                    $('#alertFailed').html(result.MESSAGE);
+
+
+                    location.href = '@Url.Action("index")';
+
+                }
+                    //location.href = '@Url.Action("Index")';
+
+                else {
+                    $('#alertSuccess').hide();
+                    $('#alertFailed').show();
+                    $('#alertSuccess').html(result.MESSAGE);
+                    $('#alertFailed').html(result.MESSAGE);
+                }
+
+            }
+        });
+
+
+
+
+
+    }
+
+    function callModal(btnid,dataID)
+    {
+        $('#addModal').modal('show');
+
+        if ($(btnid).html() == "ADD")
+        {
+            $('#LOGICAL_SYS_GROUP').val('');
+            $('#CELPN').val('');
+            //$('#EXPORTID').val('');
+            $('#MITI').val('');
+            $('#REMARK').val('');
+
+            $('#editBtn').hide();
+            $('#submitBtn').show();
+
+            $('#modalTitle').html('ADD NEW ITEM');
+
+        }
+
+        else if ($(btnid).html() == "EDIT")
+        {
+            $('#ID').val(dataID);
+            $('#LOGICAL_SYS_GROUP').val('');
+            $('#CELPN').val('');
+            //$('#EXPORTID').val('');
+            $('#MITI').val('');
+            $('#REMARK').val('');
+
+            $.ajax({
+                url: '@Url.Action("getGTSMaster")',
+                type: 'POST',
+                dataType: 'json',
+                data: { "id": dataID },
+                async: false, //blocks window close
+                success: function (result) {
+                    // alert(result);
+                    $('#LOGICAL_SYS_GROUP').val(result.LOGICAL_SYS_GROUP);
+                    $('#CELPN').val(result.CELPN);
+                    $('#EXPORTID').val(result.EXPORT_CONTROL);
+                    $('#MITI').val(result.MITI_PERMIT);
+                    $('#REMARK').val(result.REMARK);
+
+                }
+            });
+
+            $('#editBtn').show();
+            $('#submitBtn').hide();
+
+            $('#modalTitle').html('EDIT EXISTING ITEM');
+
+        }
+
+    }
+
+    function updateGTS(ID, LOGICAL_SYS_GROUP, CELPN, EXPORT_CONTROL, MITI_PERMIT, REMARK)
+    {
+
+        $.ajax({
+            url: '@Url.Action("updateGTSMaster")',
+            type: 'POST',
+            dataType: 'json',
+            data: { "ID":ID, "LOGICAL_SYS_GROUP": LOGICAL_SYS_GROUP, "CELPN": CELPN, "EXPORT_CONTROL": EXPORT_CONTROL, "MITI_PERMIT": MITI_PERMIT, "REMARK": REMARK },
+            async: false, //blocks window close
+            success: function (result) {
+                // alert(result);
+
+                if (result.STATUS == "OK")
+                {
+                    $('#addModal').modal('hide');
+                    $(`#LOGICAL_SYS_GROUP${ID}`).html(LOGICAL_SYS_GROUP);
+                    $(`#CELPN${ID}`).html(CELPN);
+                    $(`#EXPORT_CONTROL${ID}`).html(EXPORT_CONTROL);
+                    $(`#MITI_PERMIT${ID}`).html(MITI_PERMIT);
+                    $(`#REMARK${ID}`).html(REMARK);
+                    alert(result.MESSAGE);
+                }
+
+                else
+                {
+                    alert(result.MESSAGE);
+                }
+
+
+            }
+        });
+
+
+    }
+
+    function deleteGTS(ID)
+    {
+
+        if (confirm("Are you sure want to delete this PN?"))
+        {
+             $.ajax({
+                    url: '@Url.Action("deleteGTS")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { "ID": ID },
+                    async: false, //blocks window close
+                    success: function (result) {
+                        // alert(result);
+
+                        if (result.STATUS == "OK") {
+
+                            $('#alertSuccess').show();
+                            $('#alertFailed').hide();
+                            $('#alertSuccess').html(result.MESSAGE);
+                            $('#alertFailed').html(result.MESSAGE);
+
+                            //alert(`#row${ID}`);
+                            $(`#row${ID}`).remove();
+                            //$('#table1').closest(`#row${ID}`).remove();
+                        }
+
+                        else {
+                            $('#alertSuccess').hide();
+                            $('#alertFailed').show();
+                            $('#alertSuccess').html(result.MESSAGE);
+                            $('#alertFailed').html(result.MESSAGE);
+                        }
+
+
+                    }
+                });
+
+        }
+
+
+    }
+    </script>
+
+
+
+@*<section id="content" class="table-layout animated fadeIn">*@
+    <div class="col-md-9 center-column" style="margin-top:40px;">
+     
+        <p class="alert alert-success" id="alertSuccess">  </p>
+        <p class="alert alert-danger" id="alertFailed">  </p>
+
+        @{
+            if (TempData["INSERT_ALERT"] != null)
+            {
+                if (Convert.ToString(TempData["INSERT_ALERT"]).Contains("[SUCCESS]"))
+                {
+                    <p class="alert alert-success"> @Convert.ToString(TempData["INSERT_ALERT"]) </p>
+                }
+                else
+                {
+                    <p class="alert alert-danger"> @Convert.ToString(TempData["INSERT_ALERT"]) </p>
+                }
+            }
+
+        }
+
+        <h4>Export Control Master list</h4>
+        <div style="margin-right:15px;margin-bottom:15px;" class="pull-right">
+            <form action="@Url.Action("Download_Excel")" method="post">
+                <button type="submit" class="btn btn-system">Download to Excel</button>
+
+            </form>
+            <button type="button" onclick="callModal(this,null);" class="btn btn-primary">ADD</button>
+        </div>
+        <br><br><br> 
+    <table id="table1" class="cell-border" style="width:100%" border="1">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Logical System Group</th>
+                <th>Celestica PN</th>
+                <th>Export Control?</th>
+                <th>Miti Permit# </th>
+                <th>Remark</th>
+                <th>Action</th>
+
+            </tr>
+        </thead>
+        <tbody>
+
+            @{
+                List<AutoRSN.Models.GTSMaster> list = new AutoRSN.Repositories.GTSMasterRepository().getGTSList();
+                int row = 0;
+                foreach (AutoRSN.Models.GTSMaster gtsMaster in list)
+                {
+                    row++;
+                         <tr id="row@{@gtsMaster.ID}"><td style="padding-left:15px; padding-right:1px;">@row</td>
+                        <td id="LOGICAL_SYS_GROUP@{@gtsMaster.ID}" style="padding:5px;">@gtsMaster.LOGICAL_SYS_GROUP</td>
+                        <td id="CELPN@{@gtsMaster.ID}" style="padding:5px;">@gtsMaster.CELPN</td>
+                        <td id="EXPORT_CONTROL@{@gtsMaster.ID}" style="padding:5px;">@gtsMaster.EXPORT_CONTROL</td>
+                        <td id="MITI_PERMIT@{@gtsMaster.ID}" style="padding:5px;">@gtsMaster.MITI_PERMIT</td>
+                        <td id="REMARK@{@gtsMaster.ID}" style="padding:5px;">@gtsMaster.REMARK</td>
+                        <td style="padding:5px;">
+                            <button type="button" class="btn btn-success" onclick="callModal(this,'@gtsMaster.ID');">EDIT</button>
+                            <button type="button" class="btn btn-info" onclick="deleteGTS(@gtsMaster.ID);">DELETE</button>
+                        </td>
+
+                    </tr>
+                }
+            }
+
+
+
+        </tbody>
+
+    </table>
+        </div>
+
+
+<!-- Modal -->
+<div id="addModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 id="modalTitle" class="modal-title">Add new item</h4>
+            </div>
+            <div class="modal-body">
+
+               <form action="@Url.Action("Index","GTSMaster")" method="post" >
+                   @Html.AntiForgeryToken()
+               <div class="form-group">
+
+                   @Html.Hidden("ID","",new { @id="ID" })
+
+                   <p>Logical System Group:</p>
+                   <input type="text" class="form-control" style="width:250px;" name="LOGICAL_SYS_GROUP" id="LOGICAL_SYS_GROUP" />
+
+      
+                    <p>Celestica PN:</p>
+                    <input type="text" class="form-control" style="width:250px;" name="CELPN" id="CELPN" />
+             
+                    @{ 
+                        List<SelectListItem> exportlist = new List<SelectListItem>();
+
+                        exportlist.Add(new SelectListItem() { Text="YES", Value="YES" });
+                        exportlist.Add(new SelectListItem() { Text = "NO", Value = "NO" });
+
+                    }
+                    <span style="margin-right:10px;">Export Control?:</span>
+
+                    @Html.DropDownList("EXPORT_CONTROL", exportlist, new { @id = "EXPORTID" })
+             
+                    <p>Miti Permit#:</p>
+                    <input type="text" class="form-control" style="width:250px;" name="MITI" id="MITI" />
+                
+                    <p>Remark:</p>
+                    <input type="text" class="form-control" style="width:250px;" name="REMARK" id="REMARK" />
+                  
+                </div>
+
+                <div class="form-group" style="margin-bottom:50px;">
+                    <button type="button" id="editBtn" class="btn btn-alert pull-right" onclick="updateGTS($('#ID').val(),$('#LOGICAL_SYS_GROUP').val(), $('#CELPN').val(), $('#EXPORTID').val(), $('#MITI').val(), $('#REMARK').val());">Submit</button>
+                    <button type="submit" id="submitBtn" class="btn btn-alert pull-right" onclick="add($('#LOGICAL_SYS_GROUP').val(), $('#CELPN').val(), $('#EXPORTID').val(), $('#MITI').val(), $('#REMARK').val());">Submit</button>
+                </div>
+                   </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@*</section>*@

@@ -1,0 +1,201 @@
+﻿@model List < AutoRSN.Models.Shipset >
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- -------------- Topbar -------------- -->
+<header id="topbar" class="alt">
+
+    <div class="topbar-left">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-icon">
+                <a href="#">
+                    <span class="fa fa-home"></span>
+                </a>
+            </li>
+            <li class="breadcrumb-active">
+                <a href="#">Master Setup</a>
+            </li>
+            <li class="breadcrumb-link">
+                <a href="#">HOME</a>
+            </li>
+            <li class="breadcrumb-current-item">SHIPSET</li>
+        </ol>
+    </div>
+    <div class="topbar-right">
+        <div class="ml15 ib va-m" id="sidebar_right_toggle">
+            <div class="navbar-btn btn-group btn-group-number mv0">
+                <button class="btn btn-sm btn-default btn-bordered prn pln">
+                    <i class="fa fa-search fs22 text-default w"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+<section id="content" class="table-layout animated fadeIn">
+    <form role="form" action="" method="post">
+        <!-- -------------- Menu Block -------------- -->
+        <hr class="short">
+        <div class="allcp-form theme-primary">
+            <h5 class="pln"> &nbsp;Filter Shipset</h5>
+
+            <fieldset>
+                <div class="section">
+
+                    <div class="col-xs-2">
+                        <input type="text" name="cls_pn" id="cls_pn" class="form-control" size="5" width="5" placeholder="Enter Celestica P/N #">
+                    </div>
+                    &nbsp;
+                    <button type="submit" class="btn btn-dark ph30">Search</button>
+                </div>
+               
+            </fieldset>
+            <hr class="short">
+        </div>
+    </form>
+</section>
+
+    <!-- -------------- Content -------------- -->
+    <section id="content" class="table-layout animated fadeIn">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script>
+
+            function deleteTask(custPn, clsPn) {
+
+                var answer = confirm("Do u want to delete this shipset?");
+                if (answer) {
+
+                    var data = new FormData();
+                    data.append('custPn', custPn);
+                    data.append('clsPn', clsPn);
+
+
+                    var ajax = new XMLHttpRequest();
+                    ajax.open("POST", "/ShipsetHandler.ashx");
+                    ajax.send(data);
+                    $('#content').load('/Shipset/Index');
+
+                }
+                else {
+                    //some code
+                }
+
+            }
+
+        </script>
+        <!-- -------------- Column Center -------------- -->
+
+@try
+{
+    if (Session["Level"].ToString().Equals("1"))
+    {
+
+    }
+        <div class="chute chute-center">
+            @{
+                if (Convert.ToInt32(Session["UserLevel"]) == 1 | Convert.ToInt32(Session["UserLevel"]) == 2)
+                {
+
+                    <div class="alert alert-danger" style="float: none;" role="alert">
+                        <b>Your Account doesn't have this priviledge..</b>
+                    </div>
+                }
+
+                else
+                {
+
+                    if (TempData["Message"] != null)
+                    {
+                        <div class="alert alert-success" style="float: none;" role="alert">
+                            <b>@TempData["Message"]</b>
+                        </div>
+                    }
+                    <div class="col-md-push-12">
+                        <div class="panel panel-visible" id="PanelGridCustomer">
+                            <div class="panel-heading">
+                                <div class="panel-title hidden-xs">
+                                    User Master List
+                                </div>
+                            </div>
+                            <div class="panel-body pn">
+                                <div class="panel-title">
+                                    @Html.ActionLink("Create", "Create", new { }, new { @class = "btn btn-bordered btn-dark w150" })
+                                </div>
+                            </div>
+                            <div class="panel-body pn">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered" id="datatable2" cellspacing="0" width="100%">
+                                        <thead>
+                                            <tr>
+
+                                                <th class="va-m">Custumer P/N</th>
+                                                <th class="va-m">Celestica P/N</th>
+                                                <th class="va-m">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td> @Html.DisplayFor(modelItem => item.CUST_PN) </td>
+                                                    <td> @Html.DisplayFor(modelItem => item.CLS_PN) </td>
+
+                                                    <td>
+
+                                                        @{
+
+                                                            if (Convert.ToInt32(Session["UserLevel"]) == 0)
+                                                            {
+                                                                //@Html.ActionLink(" ", "EDIT", new { USERNAME = item.USERNAME }, new { @class = "btn btn-sm btn-default btn-bordered prn pln fa fa-edit fs22 text-default w50" }) <span>|</span>
+                                                                //@Html.ActionLink(" ", "DETAILS", new { USERNAME = item.USERNAME }, new { @class = "btn btn-sm btn-default btn-bordered prn pln fa fa-search fs22 text-default w50" })
+                                                            }
+                                                            else if (Convert.ToInt32(Session["UserLevel"]) == 1)
+                                                            {
+                                                                //@Html.ActionLink(" ", "EDIT", new { USERNAME = item.USERNAME, FULLNAME = item.FULLNAME }, new { @class = "btn btn-sm btn-default btn-bordered prn pln fa fa-edit fs22 text-default w50" }) <span>|</span>
+                                                                // @Html.ActionLink(" ", "DETAILS", new { USERNAME = item.USERNAME }, new { @class = "btn btn-sm btn-default btn-bordered prn pln fa fa-search fs22 text-default w50" })
+                                                            }
+                                                            else if (Convert.ToInt32(Session["UserLevel"]) == 2)
+                                                            {
+                                                                // @Html.ActionLink(" ", "EDIT", new { USERNAME = item.USERNAME }, new { @class = "btn btn-sm btn-default btn-bordered prn pln fa fa-edit fs22 text-default w50" }) <span>|</span>
+                                                                // @Html.ActionLink(" ", "DETAILS", new { USERNAME = item.USERNAME }, new { @class = "btn btn-sm btn-default btn-bordered prn pln fa fa-search fs22 text-default w50" })
+                                                            }
+
+                                                        }
+
+                                                        <input class="btn btn-sm btn-default" type="button" onclick="deleteTask('@item.CUST_PN','@item.CLS_PN')" value="Delete" />
+
+                                                    </td>
+                                                </tr>
+                                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                                            }
+
+            }
+
+        </div>
+               }
+                 catch (Exception ex)
+                   {
+                                 <script type="text/javascript">
+                                alert('@ex.Message.Replace("'","\\'").Replace("\r\n","<br/>")' + '\n' + 'Session Timeout');
+                                location.href = '/AutoRSN';
+                                //alert('Session Timeout');
+                                </script>
+                    }
+
+    </section>
+
+
+
+    
+    <!-- -------------- /Sidebar Right -------------- -->
+
+
+
+

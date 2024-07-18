@@ -1,0 +1,214 @@
+﻿@model List<AutoRSN.Models.ShipStatus>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- -------------- Topbar -------------- -->
+<header id="topbar" class="alt">
+    <div class="topbar-left">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-icon">
+                <a href="#">
+                    <span class="fa fa-home"></span>
+                </a>
+
+            </li>
+            <li class="breadcrumb-active">
+                <a href="#">Master Setup</a>
+            </li>
+            <li class="breadcrumb-link">
+                <a href="#">HOME</a>
+            </li>
+            <li class="breadcrumb-current-item">UPDATE RSN SHIP STATUS</li>
+        </ol>
+    </div>
+    <div class="topbar-right">
+        <div class="ib topbar-dropdown">
+
+        </div>
+    </div>
+</header>
+
+<!-- -------------- Content -------------- -->
+<section id="content" class="table-layout animated fadeIn">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            for(var a = 0; a<= 10; a++)
+            {
+                $('#' + String(a)).val("");
+
+            }
+          
+
+        });
+
+    </script>
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+    @*<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/black-tie/jquery-ui.css" type="text/css" rel="stylesheet" />*@
+
+    <script src="~/assets/js/jquery/jquery-1.11.1.min.js"></script>
+    <script src="~/assets/js/jquery/jquery_ui/jquery-ui.min.js"></script>
+
+    @try
+    {
+
+
+        <div class="pl15 pr50">
+            @if (TempData["Message"] != null)
+            {
+                if (@TempData["Message"].ToString().Contains("Error"))
+                {
+                    <div class="alert alert-danger" style="float: none;" role="alert">
+                        <b>@TempData["Message"]</b>
+                    </div>
+
+                }
+
+                else
+                {
+                    <div class="alert alert-success" style="float: none;" role="alert">
+                        <b>@TempData["Message"]</b>
+                    </div>
+
+                }
+
+
+
+            }
+            @using (Html.BeginForm("Index", "UpdateShip", FormMethod.Post, new { @class = "form-horizontal" }))
+            {
+                @Html.ValidationSummary(true)
+                @Html.AntiForgeryToken()
+
+            
+
+                <div class="alert alert-danger dark alert-dismissable" style="display:@(this.ViewData.ModelState.IsValid ? "none" : "")">
+                    @Html.ValidationSummary()
+                </div>
+
+
+                @*<div class="form-group">
+                        <label class="col-lg-3 control-label">DATE# :</label>
+                        <div class="col-lg-8">
+                            @Html.TextBoxFor(model => model.DATETIME, new { @class = "form-control datepicker", placeholder = "Enter date here..." })
+                        </div>
+                    </div>*@
+
+                @*<div class="form-group">
+                    <label class="col-lg-3 control-label">Select Ship Status :</label>
+                    <div class="col-lg-8">
+                        <p class="form-control-static">
+                          
+                            @Html.RadioButtonFor(model => model.STATUS, "YES") YES &nbsp;
+                                @Html.RadioButtonFor(model => model.STATUS, "NO") NO
+                        </p>
+                    </div>
+                </div>*@
+
+   
+
+
+            for(int a = 0; a< Model.Count; a++)
+            {   
+                      
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">RSN NO# :</label>
+                            <div class="col-lg-2">
+                                <p class="form-control-static"> @Html.TextBoxFor(model => model[a].RSNNO, new { @id = a , @class = "form-control" })</p>
+                            </div>
+                        </div>
+                    }
+
+
+
+                
+
+
+                @*<div class="form-group">
+                    <label class="col-lg-3 control-label">Select Ship Status :</label>
+                    <div class="col-lg-8">
+                        <p class="form-control-static">
+                         @{
+                             SelectList selectlist = new SelectList(
+         new List<SelectListItem>
+         {
+        new SelectListItem { Text = "YES", Value = "YES", Selected=true},
+        new SelectListItem { Text = "NO", Value = "NO"},
+         }, "Value", "Text");
+                             //List<SelectListItem> listItem = new List<SelectListItem>();
+
+
+
+                             //listItem.Add(new SelectListItem
+                             //{
+                             //    Text = "YES",
+                             //    Value = "YES",
+                             //    Selected = true
+                             //});
+
+                             //listItem.Add(new SelectListItem
+                             //{
+                             //    Text = "NO",
+                             //    Value = "NO"
+                             //});
+                              
+
+
+                            @Html.DropDownList("shipstatus", selectlist, new { @class = "form-control" })
+                        }
+
+                            @Html.HiddenFor(x => x.RSNNO)
+                       @Html.LabelFor(m => m.SHIPSTATUS)
+                        @Html.DropDownListFor(m => m.SHIPSTATUS, listItem)
+                            @Html.DropDownList("shipstatus", listItem)
+                        </p>
+                    </div>
+                </div>*@
+
+
+
+                <div class="form-group">
+                    <label class="col-lg-3 control-label"></label>
+                    <div class="col-lg-8">
+                        <input type="submit" class="btn btn-bordered btn-success w150" value="Save" />
+                        @*@Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-bordered btn-dark w150" })*@
+                    </div>
+                </div>
+
+            }
+        </div>
+
+    }
+    catch (Exception ex)
+    {
+        <script type="text/javascript">
+                                    alert('@ex.Message.Replace("'","\\'").Replace("\r\n","<br/>")' + '\n' + 'Session Timeout');
+                                    location.href = '/AutoRSN';
+                                    //alert('Session Timeout');
+        </script>
+    }
+
+
+    <!-- -------------- /Column Center -------------- -->
+
+
+    <script>
+
+
+        $('.datepicker').datepicker({ dateFormat: 'dd/mm/yy' });
+
+
+    </script>
+</section>
+

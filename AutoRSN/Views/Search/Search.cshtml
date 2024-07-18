@@ -1,0 +1,26 @@
+﻿@model AutoRSN.Models.Search
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div>
+        <b>Enter Data to Search</b>
+        @using (Html.BeginForm())
+        {
+
+            <p>Id: @Html.TextBoxFor(i => i.Id) </p>
+            <p>Name: @Html.TextBoxFor(n => n.Name) </p>
+            <input type="submit" value="Search" />
+        }
+    </div>
+</body>
+</html>
