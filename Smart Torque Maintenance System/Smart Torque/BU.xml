@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--This is the config file where new DB connections are added 
+    Every new connection must within <BusinessUnit> bracket
+    with CUSTOMER, DB_ID, PASSWORD, DB_HOSTNAME and SID
+    for each connections 
+    (CUSTOMER is just the name of the connection)
+    
+'VERSION DETAILS
+'V1.0.0 KUHAN (04012024) (CHG0089017) - (1) Add BU connection for Collins
+-->
+<DBconnection>
+  <BusinessUnit>
+    <CUSTOMER>Honeywell</CUSTOMER>
+    <DB_ID>honeyse</DB_ID>
+    <PASSWORD>o5honeytcp</PASSWORD>
+    <DB_HOSTNAME>10.195.80.43</DB_HOSTNAME>
+    <SID>odcse02</SID>              
+  </BusinessUnit>
+  <BusinessUnit>
+    <CUSTOMER>Thales</CUSTOMER>
+    <DB_ID>thales</DB_ID>
+    <PASSWORD>o5thalestcp</PASSWORD>
+    <DB_HOSTNAME>10.195.80.42</DB_HOSTNAME>
+    <SID>odcse01</SID>
+  </BusinessUnit>
+<BusinessUnit>
+    <CUSTOMER>Juniper</CUSTOMER>
+    <DB_ID>juniper</DB_ID>
+    <PASSWORD>o5junipertcp</PASSWORD>
+    <DB_HOSTNAME>10.195.80.47</DB_HOSTNAME>
+    <SID>odcse04</SID>
+  </BusinessUnit>
+
+  <!--'V1.0.0 KUHAN-->
+<BusinessUnit> 
+    <CUSTOMER>Collins</CUSTOMER>
+    <DB_ID>hs</DB_ID>
+    <PASSWORD>o5hstcp</PASSWORD>
+    <DB_HOSTNAME>10.195.80.42</DB_HOSTNAME>
+    <SID>odcse01</SID>
+</BusinessUnit>
+
+</DBconnection>

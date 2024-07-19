@@ -1,0 +1,20 @@
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\roslyn\csc.exe
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\roslyn\Microsoft.CodeAnalysis.dll
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\roslyn\Microsoft.CSharp.Core.targets
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\roslyn\Microsoft.VisualBasic.Core.targets
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\roslyn\System.Collections.Immutable.dll
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\roslyn\System.Reflection.Metadata.dll
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\roslyn\vbc.exe
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\roslyn\VBCSCompiler.exe
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\roslyn\VBCSCompiler.exe.config
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\Smart Torque.dll.config
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\Smart Torque.dll
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\Smart Torque.pdb
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\obj\Debug\Smart Torque.csprojResolveAssemblyReference.cache
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\obj\Debug\Smart Torque.dll
+c:\users\my68008374\documents\visual studio 2015\Projects\Smart Torque\Smart Torque\obj\Debug\Smart Torque.pdb
